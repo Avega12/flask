@@ -1,4 +1,9 @@
 pipeline {
+  environment {
+    registry = 'avega12/flask_app'
+    registryCredentials = 'docker'
+    cluster_name = 'skillstorm'
+  }
   agent {
     node {
       label 'docker'
@@ -12,23 +17,21 @@ pipeline {
       }
     }
 
-    stage('build') {
+    stage('Build Stage') {
       steps {
-        sh 'docker build -t avega12/flask_app .'
+        script {
+          dockerImage = docker.build(registry)
+        }
       }
     }
-
-    stage('docker login') {
+    stage('Deploy Stage') {
       steps {
-        sh 'docker login -u avega12 -p 779d99ae-8751-4211-9393-a27c834ce959'
+        script {
+          docker.withRegistry('', registryCredentials) {
+            dockerImage.push()
+          }
+        }  
       }
     }
-
-    stage('docker push') {
-      steps {
-        sh 'docker push avega12/flask_app'
-      }
-    }
-
   }
 }
