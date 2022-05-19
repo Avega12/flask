@@ -14,7 +14,7 @@ pipeline {
 
     stage('build') {
       steps {
-        sh 'docker build -t flask_app .'
+        sh 'docker build -t avega12/flask_app .'
       }
     }
 
