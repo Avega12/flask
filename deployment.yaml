@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  flaskcontainerofvega
+  namespace: avega
+  labels:
+    app:  flaskcontainerofvega
+spec:
+  selector:
+    matchLabels:
+      app: flaskcontainerofvega
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app:  flaskcontainerofvega
+    spec:
+      containers:
+      - name:  flaskcontainerofvega
+        image:  avega12/flask_app
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi
+        ports:
+        - containerPort:  5000
+          name:  flaskcontainerofvega
+        imagePullPolicy: Always
+      restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flaskcontainerofvega
+  namespace: avega
+spec:
+  selector:
+    app: flaskcontainerofvega
+  type: LoadBalancer
+  sessionAffinity: None
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800
+  ports:
+  - name: flaskcontainerofvega
+    protocol: TCP
+    port: 80
+    targetPort: 5000
