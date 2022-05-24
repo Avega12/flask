@@ -41,7 +41,7 @@ pipeline {
           sh "aws eks update-kubeconfig --region us-east-1 --name ${cluster_name}"
           sh "kubectl create namespace ${namespace}"
           sh "kubectl apply -f deployment.yaml -n ${namespace}"
-          sh "kubectl -n ${namespace} rollout restart deployment flaskcontainerofvega"
+          sh "kubectl -n ${namespace} rollout restart deployment flaskcontainer"
         }
       }
     }
